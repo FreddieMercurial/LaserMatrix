@@ -1,7 +1,3 @@
-
-#include <SPI.h>
-
-
 // SparkFun Pro Micro
 // https://www.sparkfun.com/products/12640
 const int RXLED = 17;  // The RX LED has a defined Arduino pin
@@ -13,19 +9,10 @@ const int MATRIX_CLOCK_PIN = 15;
 const int MATRIX_SER_PIN = 16;
 const int MATRIX_ENABLE_PIN = 18;
 const int MATRIX_RESET_PIN = 19;
-const long SPI_RATE = 14000000;
-const long SPI_DIVIDER = SPI_CLOCK_DIV2;
-const byte SPI_ORDER = MSBFIRST;
-const byte SPI_MODE = SPI_MODE0;
 
-// Mode      | Clock Polarity (CPOL) | Clock Phase (CPHA) | Output Edge | Data Capture
-// ----------+-----------------------+--------------------+-------------+--------------
-// SPI_MODE0 | 0                     | 0                  | Falling     | Rising
-// SPI_MODE1 | 0                     | 1                  | Rising      | Falling
-// SPI_MODE2 | 1                     | 0                  | Rising      | Falling
-// SPI_MODE3 | 1                     | 1                  | Falling     | Rising
 
 bool RxLedOn = false;
+byte j = 0;
 
 void setup() {
   pinMode(RXLED, OUTPUT);
@@ -38,19 +25,7 @@ void setup() {
   pinMode(MATRIX_RESET_PIN, OUTPUT);
   digitalWrite(MATRIX_ENABLE_PIN, false); // enable LOW
   digitalWrite(MATRIX_RESET_PIN, true); // reset LOW  
-
-  SPI.begin();
-  SPI.setBitOrder(SPI_ORDER);
-  SPI.setDataMode(SPI_MODE);
-  SPI.setClockDivider(SPI_DIVIDER);  
   
-  digitalWrite(MATRIX_LATCH_PIN, LOW);
-  delay(500);
-  SPI.beginTransaction(SPISettings(SPI_RATE, SPI_ORDER, SPI_MODE));
-  SPI.transfer(B01010101);
-  delay(500);
-  SPI.endTransaction();
-  digitalWrite(MATRIX_LATCH_PIN, HIGH);
 }
 
 void setRxLed(bool power)
@@ -62,4 +37,14 @@ void setRxLed(bool power)
 void loop() {
   delay(500);  
   setRxLed(!RxLedOn);
+
+  
+    //ground latchPin and hold low for as long as you are transmitting
+    digitalWrite(MATRIX_LATCH_PIN, LOW);
+    shiftOut(MATRIX_SER_PIN, MATRIX_CLOCK_PIN, LSBFIRST, j);
+    //return the latch pin high to signal chip that it
+    //no longer needs to listen for information
+    digitalWrite(MATRIX_LATCH_PIN, HIGH);
+    delay(300);
+    j = (j + 1) % 256;
 }
