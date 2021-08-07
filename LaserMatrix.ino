@@ -64,6 +64,11 @@ void writeSPI(byte data[], int len)
   digitalWrite(MATRIX_LATCH_PIN, HIGH);
 }
 
+void writeDisplay(byte data[5])
+{
+  writeSPI(data, 5);
+}
+
 void loop() {
   setRxLed(!RxLedOn);
   data[0] = j;
