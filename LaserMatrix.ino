@@ -4,11 +4,11 @@ const int RXLED = 17;  // The RX LED has a defined Arduino pin
 
 // SparkFun 74HC595 breakout 
 // https://www.sparkfun.com/products/10680
-const int MATRIX_LATCH_PIN = 10;
+const int MATRIX_LATCH_PIN = A10;
 const int MATRIX_CLOCK_PIN = 15;
 const int MATRIX_SER_PIN = 16;
-const int MATRIX_ENABLE_PIN = 18;
-const int MATRIX_RESET_PIN = 19;
+const int MATRIX_ENABLE_PIN = A0;
+const int MATRIX_RESET_PIN = A1;
 
 
 bool RxLedOn = false;
@@ -23,8 +23,9 @@ void setup() {
   pinMode(MATRIX_SER_PIN, OUTPUT);
   pinMode(MATRIX_ENABLE_PIN, OUTPUT);
   pinMode(MATRIX_RESET_PIN, OUTPUT);
-  digitalWrite(MATRIX_ENABLE_PIN, false); // enable LOW
-  digitalWrite(MATRIX_RESET_PIN, true); // reset LOW  
+  
+  digitalWrite(MATRIX_ENABLE_PIN, true); // enable LOW
+  digitalWrite(MATRIX_RESET_PIN, false); // reset LOW  
   
 }
 
