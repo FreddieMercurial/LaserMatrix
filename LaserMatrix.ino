@@ -13,6 +13,10 @@ const int MATRIX_CLOCK_PIN = 15;
 const int MATRIX_SER_PIN = 16;
 const int MATRIX_ENABLE_PIN = 18;
 const int MATRIX_RESET_PIN = 19;
+const long SPI_RATE = 14000000;
+const long SPI_DIVIDER = SPI_CLOCK_DIV2;
+const byte SPI_ORDER = MSBFIRST;
+const byte SPI_MODE = SPI_MODE0;
 
 // Mode      | Clock Polarity (CPOL) | Clock Phase (CPHA) | Output Edge | Data Capture
 // ----------+-----------------------+--------------------+-------------+--------------
@@ -36,14 +40,16 @@ void setup() {
   digitalWrite(MATRIX_RESET_PIN, true); // reset LOW  
 
   SPI.begin();
-  SPI.setBitOrder(MSBFIRST);
-  SPI.setDataMode(SPI_MODE0);
-  SPI.setClockDivider(SPI_CLOCK_DIV2);
-
+  SPI.setBitOrder(SPI_ORDER);
+  SPI.setDataMode(SPI_MODE);
+  SPI.setClockDivider(SPI_DIVIDER);  
+  
   digitalWrite(MATRIX_LATCH_PIN, LOW);
   delay(500);
-  SPI.transfer(B11111111);
+  SPI.beginTransaction(SPISettings(SPI_RATE, SPI_ORDER, SPI_MODE));
+  SPI.transfer(B01010101);
   delay(500);
+  SPI.endTransaction();
   digitalWrite(MATRIX_LATCH_PIN, HIGH);
 }
 
